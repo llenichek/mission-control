@@ -1,0 +1,9 @@
+[
+  {"id": "main", "identityName": "Leni", "identityEmoji": "🐾", "role": "AI Assistant", "workspace": "/home/openclaw/.openclaw/workspace", "model": "openrouter/minimax/minimax-m2.5", "status": "ready", "currentTask": "—"},
+  {"id": "rent", "identityName": "Rent", "identityEmoji": "🏠", "role": "Website Agent (Rank & Rent)", "workspace": "/home/openclaw/.openclaw/workspace", "model": "openrouter/minimax/minimax-m2.5", "status": "working", "currentTask": "Building local service website..."},
+  {"id": "coding-agent", "identityName": "coding-agent", "identityEmoji": "💻", "role": "Code Generation", "workspace": "/home/openclaw/.openclaw/workspace", "model": "openrouter/minimax/minimax-m2.5", "status": "ready", "currentTask": "—"},
+  {"id": "bug-hunter", "identityName": "bug-hunter", "identityEmoji": "🐛", "role": "Bug Finding", "workspace": "/home/openclaw/.openclaw/workspace", "model": "openrouter/minimax/minimax-m2.5", "status": "ready", "currentTask": "—"},
+  {"id": "content-generation", "identityName": "content-generation", "identityEmoji": "✍️", "role": "Content Creation", "workspace": "/home/openclaw/.openclaw/workspace", "model": "openrouter/minimax/minimax-m2.5", "status": "ready", "currentTask": "—"},
+  {"id": "social-media", "identityName": "social-media", "identityEmoji": "📱", "role": "Social Media Mgmt", "workspace": "/home/openclaw/.openclaw/workspace", "model": "openrouter/minimax/minimax-m2.5", "status": "ready", "currentTask": "—"},
+  {"id": "project-manager", "identityName": "project-manager", "identityEmoji": "📋", "role": "Project Coordination", "workspace": "/home/openclaw/.openclaw/workspace", "model": "openrouter/minimax/minimax-m2.5", "status": "ready", "currentTask": "—"}
+]

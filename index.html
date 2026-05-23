@@ -68,6 +68,7 @@ main.active{display:block}
 <button class="tab" data-target="projects">📋 Projects</button>
 <button class="tab" data-target="timeline">📅 Timeline</button>
 <button class="tab" data-target="notes">📝 Notes</button>
+<button class="tab" data-target="agents">🤖 Agents</button>
 </nav>
 <div class="search"><span class="icon">🔍</span><input type="text" placeholder="Search…" id="global-search"><div class="status-dot" title="Online"></div></div>
 </header>
@@ -84,6 +85,11 @@ main.active{display:block}
 </main>
 <main id="projects"><div class="kanban"><div class="column" data-col="backlog"><h4>Backlog</h4><button class="add-task" style="margin:0.5rem;background:none;border:none;color:var(--accent);cursor:pointer">+ Add</button><div class="tasks"></div></div><div class="column" data-col="inprogress"><h4>In Progress</h4><button class="add-task" style="margin:0.5rem;background:none;border:none;color:var(--accent);cursor:pointer">+ Add</button><div class="tasks"></div></div><div class="column" data-col="done"><h4>Done</h4><button class="add-task" style="margin:0.5rem;background:none;border:none;color:var(--accent);cursor:pointer">+ Add</button><div class="tasks"></div></div></div></main>
 <main id="timeline"><div class="timeline" id="timeline-container"></div></main>
+<main id="agents">
+  <section style="margin-bottom:var(--gap);color:var(--accent);font-size:1.25rem;">Agents Overview</section>
+  <div id="agents-list" class="grid"></div>
+</main>
+
 <main id="notes"><div class="notes"><textarea id="notes-area" placeholder="Write anything…"></textarea><div class="info"><span id="char-count">0</span> chars • Last saved <span id="last-saved">never</span></div></div></main>
 <script>
 function $(s){return document.querySelector(s)}
@@ -105,6 +111,28 @@ $('.kanban').onclick=e=>{if(e.target.classList.contains('task-card')){let col=e.
 let timeline=load('timeline',[{title:'Launch',range:'Jan‑Feb 2026',desc:'Kickoff & MVP',milestones:['Setup repo','Initial UI','Core API']},{title:'Growth',range:'Mar‑Jun 2026',desc:'User acquisition',milestones:['Marketing','Referral program','Feedback loop']},{title:'Scale',range:'Jul‑Dec 2026',desc:'Automation & Monetisation',milestones:['Paid plans','Integrations','Scaling infra']}]);
 function renderTimeline(){let c=$('#timeline-container');c.innerHTML='';let now=new Date();timeline.forEach(p=>{let d=document.createElement('div');d.className='phase';if(new Date(p.range.split('‑')[1])>=now)d.classList.add('current');d.innerHTML=`<h5>${p.title}</h5><div class="date">${p.range}</div><p>${p.desc}</p>`;let ul=document.createElement('ul');p.milestones.forEach(m=>{let li=document.createElement('li');li.textContent=m;ul.appendChild(li);});d.appendChild(ul);c.appendChild(d);});}
 renderTimeline();
+renderTimeline();
+function renderAgents(){
+  const container=document.getElementById('agents-list');
+  fetch('agents.json')
+    .then(r=>r.json())
+    .then(agents=>{
+      container.innerHTML='';
+      agents.forEach(agent=>{
+        const card=document.createElement('div');
+        const statusColor = agent.status === 'working' ? '#ffb84d' : '#00ff80';
+        const statusText = agent.status === 'working' ? 'Working' : 'Ready';
+        card.className='card';
+        card.innerHTML=`<div class="accent" style="background:${statusColor}"></div><div class="content"><h3>${agent.identityEmoji || ''} ${agent.identityName || agent.id}</h3><div class="value">Status: <span style="color:${statusColor}">${statusText}</span></div><div>${agent.role || 'Agent'}</div><div style="font-size:.85rem;color:var(--muted);margin-top:.5rem">${agent.currentTask || '—'}</div></div>`;
+        container.appendChild(card);
+      });
+    })
+    .catch(err=>{
+      console.error('Failed to load agents:', err);
+      container.innerHTML='<div class="card"><div class="content"><p>Error loading agents data.</p></div></div>';
+    });
+}
+renderAgents();
 let notes=load('notes','');$('#notes-area').value=notes;$('#notes-area').oninput=()=>{notes=$('#notes-area').value;save('notes',notes);$('#char-count').textContent=notes.length;$('#last-saved').textContent=new Date().toLocaleTimeString();};$('#char-count').textContent=notes.length;
 $$('.tab').forEach(t=>t.onclick=e=>{$$('.tab').forEach(x=>x.classList.toggle('active',x===e.target));$$('main').forEach(m=>m.classList.toggle('active',m.id===e.target.dataset.target));});
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();$('#global-search').focus();}});
