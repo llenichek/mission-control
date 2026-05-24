@@ -69,6 +69,9 @@ main.active{display:block}
 <button class="tab" data-target="timeline">📅 Timeline</button>
 <button class="tab" data-target="notes">📝 Notes</button>
 <button class="tab" data-target="agents">🤖 Agents</button>
+<button class="tab" data-target="seo">🔍 SEO Research</button>
+<a href="/rent-a-website" class="tab-link" style="color:var(--muted);font-size:1rem;text-decoration:none;padding:0.25rem 0.5rem">🏠 Rent a Website</a>
+<a href="/postpilot" class="tab-link" style="color:var(--muted);font-size:1rem;text-decoration:none;padding:0.25rem 0.5rem">🚀 PostPilot</a>
 </nav>
 <div class="search"><span class="icon">🔍</span><input type="text" placeholder="Search…" id="global-search"><div class="status-dot" title="Online"></div></div>
 </header>
@@ -91,6 +94,18 @@ main.active{display:block}
 </main>
 
 <main id="notes"><div class="notes"><textarea id="notes-area" placeholder="Write anything…"></textarea><div class="info"><span id="char-count">0</span> chars • Last saved <span id="last-saved">never</span></div></div></main>
+
+<main id="seo">
+<section style="margin-bottom:var(--gap)">
+<h2 style="color:var(--accent);margin-bottom:1rem">🔍 SEO Research Tool</h2>
+<div style="display:flex;gap:0.5rem;margin-bottom:1.5rem">
+<input type="text" id="seo-url" placeholder="Enter website URL…" style="flex:1;padding:0.75rem;border:none;border-radius:var(--radius);background:var(--card-bg);color:var(--text)">
+<button id="run-seo" style="padding:0.75rem 1.5rem;background:var(--accent);border:none;border-radius:var(--radius);color:#000;font-weight:600;cursor:pointer">Analyze</button>
+</div>
+<div id="seo-results" class="grid"></div>
+</section>
+</main>
+
 <script>
 function $(s){return document.querySelector(s)}
 function $$(s){return document.querySelectorAll(s)}
@@ -135,6 +150,9 @@ function renderAgents(){
 renderAgents();
 let notes=load('notes','');$('#notes-area').value=notes;$('#notes-area').oninput=()=>{notes=$('#notes-area').value;save('notes',notes);$('#char-count').textContent=notes.length;$('#last-saved').textContent=new Date().toLocaleTimeString();};$('#char-count').textContent=notes.length;
 $$('.tab').forEach(t=>t.onclick=e=>{$$('.tab').forEach(x=>x.classList.toggle('active',x===e.target));$$('main').forEach(m=>m.classList.toggle('active',m.id===e.target.dataset.target));});
+
+// SEO Research
+$('#run-seo').onclick=()=>{const url=$('#seo-url').value;if(!url){alert('Please enter a URL');return;}const results=$('#seo-results');results.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem"><div class="value">Analyzing '+url+'…</div></div>';fetch('https://api.openpage.ai/v1/seo/analyze?url='+encodeURIComponent(url)).then(r=>r.json()).then(data=>{results.innerHTML=data.error?'<div class="card" style="grid-column:1/-1"><div class="content"><p style="color:#ff5c5c">'+data.error+'</p></div></div>':`<div class="card"><div class="accent"></div><div class="content"><h3>Score</h3><div class="value" style="color:${data.score>=70?'#00ff80':data.score>=40?'#ffb84d':'#ff5c5c'}">${data.score}/100</div></div></div><div class="card"><div class="accent"></div><div class="content"><h3>Issues</h3><div class="value">${data.issues||0}</div></div></div><div class="card"><div class="accent"></div><div class="content"><h3>Suggestions</h3><div class="value">${data.suggestions||0}</div></div></div>`}).catch(err=>{results.innerHTML='<div class="card" style="grid-column:1/-1"><div class="content"><p style="color:#ff5c5c">Error analyzing URL</p></div></div>'});};
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();$('#global-search').focus();}});
 </script>
 </body>
